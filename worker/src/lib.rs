@@ -101,7 +101,8 @@ async fn handle_delete_note(_req: Request, ctx: RouteContext<()>) -> worker::Res
 async fn handle_root(_: Request, _: RouteContext<()>) -> worker::Result<Response> {
     Response::from_json(&serde_json::json!({
         "name": "Nullith API",
-        "version": "1.0.0"
+        "version": "1.0.0",
+        "status": "deployed via GitHub Actions"
     }))
 }
 

@@ -1,0 +1,10 @@
+.env
+.env.local
+*.wasm
+target/
+dist/
+.wrangler/
+node_modules/
+build/
+Cargo.lock
+*.tgz

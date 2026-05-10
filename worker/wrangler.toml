@@ -1,0 +1,19 @@
+name = "nullith-worker"
+main = "build/index.js"
+compatibility_date = "2025-04-22"
+
+[build]
+command = "worker-build"
+
+[observability]
+enabled = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "nullith-db"
+database_id = "b8b6519f-3363-4508-8e7f-d0e88ce697db"
+
+# R2 - disabled for now
+# [[r2_buckets]]
+# binding = "MY_BUCKET"
+# bucket_name = "nullith-files"

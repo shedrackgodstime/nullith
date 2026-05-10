@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "d1:create": "wrangler d1 create",
+    "d1:execute": "wrangler d1 execute"
+  },
+  "devDependencies": {
+    "wrangler": "^4.84.1"
+  }
+}

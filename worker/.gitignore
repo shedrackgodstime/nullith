@@ -1,0 +1,6 @@
+.env
+.env.local
+*.wasm
+target/
+dist/
+.wrangler/

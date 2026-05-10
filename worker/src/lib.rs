@@ -6,8 +6,6 @@ fn now_millis() -> String {
     js_sys::Date::now().to_string()
 }
 
-// ============ NOTES ============
-
 async fn handle_get_notes(_: Request, ctx: RouteContext<()>) -> worker::Result<Response> {
     let d1 = ctx.env.d1("DB")?;
     let stmt = d1.prepare("SELECT key, value, create_at, update_at FROM notes ORDER BY update_at DESC LIMIT 50");
@@ -28,7 +26,6 @@ async fn handle_get_notes(_: Request, ctx: RouteContext<()>) -> worker::Result<R
 
 async fn handle_get_note(_req: Request, ctx: RouteContext<()>) -> worker::Result<Response> {
     let key = ctx.param("key").ok_or("Missing key")?;
-    
     let d1 = ctx.env.d1("DB")?;
     let stmt = d1.prepare("SELECT key, value, create_at, update_at FROM notes WHERE key = ?");
     let bound = stmt.bind(&[JsValue::from(key)])?;
@@ -54,7 +51,6 @@ async fn handle_set_note(mut req: Request, ctx: RouteContext<()>) -> worker::Res
     let now = now_millis();
 
     let d1 = ctx.env.d1("DB")?;
-    
     let check = d1.prepare("SELECT key FROM notes WHERE key = ?");
     let bound_check = check.bind(&[JsValue::from(key)])?;
     let exists = bound_check.raw_js_value().await?;
@@ -69,17 +65,11 @@ async fn handle_set_note(mut req: Request, ctx: RouteContext<()>) -> worker::Res
         bound.run().await?;
     }
 
-    Response::from_json(&serde_json::json!({
-        "key": key,
-        "value": value,
-        "create_at": now,
-        "update_at": now
-    }))
+    Response::from_json(&serde_json::json!({"key": key, "value": value, "create_at": now, "update_at": now}))
 }
 
 async fn handle_delete_note(_req: Request, ctx: RouteContext<()>) -> worker::Result<Response> {
     let key = ctx.param("key").ok_or("Missing key")?;
-
     let d1 = ctx.env.d1("DB")?;
     let check = d1.prepare("SELECT key FROM notes WHERE key = ?");
     let bound_check = check.bind(&[JsValue::from(key)])?;
@@ -96,18 +86,16 @@ async fn handle_delete_note(_req: Request, ctx: RouteContext<()>) -> worker::Res
     Response::from_json(&serde_json::json!({"success": true}))
 }
 
-// ============ ROOT ============
-
 async fn handle_root(_: Request, _: RouteContext<()>) -> worker::Result<Response> {
     Response::from_json(&serde_json::json!({
         "name": "Nullith API",
         "version": "1.0.0",
-        "status": "deployed via GitHub Actions"
+        "status": "running"
     }))
 }
 
 #[event(fetch, respond_with_errors)]
-async fn main(req: Request, env: Env, _ctx: Context) -> Result<Response> {
+pub async fn main(req: Request, env: Env, _ctx: Context) -> Result<Response> {
     Router::new()
         .get_async("/", handle_root)
         .get_async("/notes", handle_get_notes)

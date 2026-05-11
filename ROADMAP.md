@@ -37,7 +37,13 @@
 - [ ] Share links (time-limited)
 - [ ] Webhooks on changes
 
-### Phase 5: Observability
+### Phase 5: Backup & Secondary Stores
+- [ ] TursoDB for secondary/replica database
+- [ ] Backup storage (wasabi/backblaze/ archive.org)
+- [ ] Cross-region replication
+- [ ] Cache layer with TTL
+
+### Phase 6: Observability
 - [ ] Request metrics dashboard
 - [ ] Usage alerts
 - [ ] Cost tracking (free tier monitoring)

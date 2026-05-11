@@ -4,6 +4,7 @@ pub fn now_millis() -> String {
     js_sys::Date::now().to_string()
 }
 
+#[allow(dead_code)]
 pub fn uuid() -> String {
     let ts = js_sys::Date::now() as u64;
     let rnd = (js_sys::Math::random() * 1000000.0) as u64;

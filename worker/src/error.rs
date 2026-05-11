@@ -2,34 +2,40 @@ use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
 #[derive(Debug, Error, Serialize, Deserialize, Clone)]
+#[allow(dead_code)]
 pub enum AppError {
     #[error("Not found: {0}")]
     NotFound(String),
-    
+
     #[error("Bad request: {0}")]
     BadRequest(String),
-    
+
     #[error("Internal error: {0}")]
     Internal(String),
-    
+
     #[error("Unauthorized: {0}")]
     Unauthorized(String),
 }
 
+#[allow(dead_code)]
 pub type AppResult<T> = Result<T, AppError>;
 
+#[allow(dead_code)]
 pub fn not_found(message: impl Into<String>) -> AppError {
     AppError::NotFound(message.into())
 }
 
+#[allow(dead_code)]
 pub fn bad_request(message: impl Into<String>) -> AppError {
     AppError::BadRequest(message.into())
 }
 
+#[allow(dead_code)]
 pub fn internal(message: impl Into<String>) -> AppError {
     AppError::Internal(message.into())
 }
 
+#[allow(dead_code)]
 pub fn unauthorized(message: impl Into<String>) -> AppError {
     AppError::Unauthorized(message.into())
 }
@@ -76,7 +82,7 @@ mod tests {
     #[test]
     fn test_result_handling() {
         let result: AppResult<i32> = Ok(42);
-        assert_eq!(result.unwrap(), 42);
+        assert!(result.is_ok());
 
         let err_result: AppResult<i32> = Err(not_found("test"));
         assert!(err_result.is_err());

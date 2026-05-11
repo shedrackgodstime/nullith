@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[allow(dead_code)]
 pub struct Note {
     pub key: String,
     pub value: String,
@@ -9,6 +10,7 @@ pub struct Note {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[allow(dead_code)]
 pub struct File {
     pub id: String,
     pub name: String,
@@ -18,6 +20,7 @@ pub struct File {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[allow(dead_code)]
 pub struct ApiResponse<T> {
     pub success: bool,
     pub data: Option<T>,
@@ -25,6 +28,7 @@ pub struct ApiResponse<T> {
 }
 
 impl<T> ApiResponse<T> {
+    #[allow(dead_code)]
     pub fn ok(data: T) -> Self {
         Self {
             success: true,
@@ -33,6 +37,7 @@ impl<T> ApiResponse<T> {
         }
     }
 
+    #[allow(dead_code)]
     pub fn err(msg: &str) -> Self {
         Self {
             success: false,

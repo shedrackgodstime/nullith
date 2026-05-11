@@ -3,7 +3,10 @@ use worker::*;
 pub fn verify_api_key(req: &Request, env: &Env) -> Result<bool, worker::Error> {
     let api_key = match env.secret("API_KEY") {
         Ok(key) => {
-            log::info!("API_KEY secret found, value length: {}", key.to_string().len());
+            log::info!(
+                "API_KEY secret found, value length: {}",
+                key.to_string().len()
+            );
             key.to_string()
         }
         Err(e) => {
@@ -34,6 +37,7 @@ pub fn verify_api_key(req: &Request, env: &Env) -> Result<bool, worker::Error> {
     }
 }
 
+#[allow(dead_code)]
 pub fn is_auth_enabled(env: &Env) -> bool {
     match env.secret("API_KEY") {
         Ok(key) => !key.to_string().is_empty(),

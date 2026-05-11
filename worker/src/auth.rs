@@ -17,7 +17,7 @@ pub fn verify_api_key(req: &Request, env: &Env) -> Result<bool, worker::Error> {
         return Err(worker::Error::from("API_KEY is empty"));
     }
 
-match req.headers().get("x-api-key") {
+    match req.headers().get("x-api-key") {
         Ok(Some(key)) if key == api_key => Ok(true),
         Ok(Some(_)) => {
             log::warn!("Invalid API key provided");
@@ -30,15 +30,6 @@ match req.headers().get("x-api-key") {
         Err(e) => {
             log::error!("Error getting header: {:?}", e);
             Err(worker::Error::from("Error reading header"))
-        }
-    }
-        Ok(None) => {
-            log::warn!("No API key provided");
-            Ok(false)
-        }
-        Err(e) => {
-            log::error!("Error getting header: {}", e);
-            Ok(false)
         }
     }
 }

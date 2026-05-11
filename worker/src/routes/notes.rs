@@ -13,6 +13,7 @@ fn check_auth(req: &Request, env: &Env) -> Result<(), worker::Error> {
 }
 
 pub async fn handle_get_notes(req: Request, ctx: RouteContext<()>) -> worker::Result<Response> {
+    check_auth(&req, &ctx.env)?;
     log::info!("GET /notes - request from {:?}", req.headers().get("user-agent").ok());
     
     let d1 = ctx.env.d1("DB")?;

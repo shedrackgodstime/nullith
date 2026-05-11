@@ -41,6 +41,9 @@ pub async fn handle_get_file(_req: Request, ctx: RouteContext<()>) -> worker::Re
     
     match obj {
         Some(object) => {
+            let body = object.body().ok_or("No body")?;
+            let data = body.bytes().await?;
+            
             let mime = path.split('.').last()
                 .map(|ext| match ext {
                     "png" => "image/png",
@@ -56,15 +59,11 @@ pub async fn handle_get_file(_req: Request, ctx: RouteContext<()>) -> worker::Re
                 })
                 .unwrap_or("application/octet-stream");
             
-            let headers = Headers::new();
+            let mut headers = Headers::new();
             headers.set("Content-Type", mime).map_err(|e| worker::Error::from(e.to_string()))?;
+            headers.set("Content-Length", &data.len().to_string()).map_err(|e| worker::Error::from(e.to_string()))?;
             
-            // For now return 404 if no body - reading body needs wasm-streams
-            if object.body().is_some() {
-                Ok(Response::empty()?.with_headers(headers))
-            } else {
-                Response::error("File has no content", 404)
-            }
+            Ok(Response::from_bytes(data)?.with_headers(headers))
         }
         None => Response::error("File not found", 404),
     }

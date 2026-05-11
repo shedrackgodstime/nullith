@@ -64,9 +64,17 @@ The worker will be available at `http://localhost:8787`
 
 ### Set API Key for Local Dev
 
+Generate a secure API key and add it to your `.dev.vars` file:
+
 ```bash
-echo 'API_KEY=5WhhRuT5Oyn5CC+qe1YKg5ltgoM/mzxdKYLrnH61s2Y=' > .dev.vars
+# Generate a new secure key
+openssl rand -base64 32
+
+# Then add it to .dev.vars
+echo 'API_KEY=your-generated-key-here' >> .dev.vars
 ```
+
+**Important:** Never commit `.dev.vars` to version control. It's already in `.gitignore`.
 
 ### Deployment
 

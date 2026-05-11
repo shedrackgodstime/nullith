@@ -12,6 +12,7 @@ use worker::*;
 pub async fn main(req: Request, env: Env, _ctx: Context) -> Result<Response> {
     let router = Router::new()
         .get_async("/", handle_root)
+        .get_async("/debug/secret", handle_debug_secret)
         .get_async("/notes", routes::notes::handle_get_notes)
         .get_async("/notes/:key", routes::notes::handle_get_note)
         .post_async("/notes/:key", routes::notes::handle_set_note)
@@ -32,4 +33,24 @@ async fn handle_root(_: Request, _: RouteContext<()>) -> worker::Result<Response
         version: "1.0.0".to_string(),
         status: "running".to_string(),
     })
+}
+
+async fn handle_debug_secret(_: Request, ctx: RouteContext<()>) -> worker::Result<Response> {
+    match ctx.env.secret("API_KEY") {
+        Ok(key) => {
+            let val = key.to_string();
+            log::info!("Secret found, length: {}", val.len());
+            Response::from_json(&serde_json::json!({
+                "status": "found",
+                "length": val.len()
+            }))
+        }
+        Err(e) => {
+            log::warn!("Secret error: {:?}", e);
+            Response::from_json(&serde_json::json!({
+                "status": "error",
+                "error": format!("{:?}", e)
+            }))
+        }
+    }
 }

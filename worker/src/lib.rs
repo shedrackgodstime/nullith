@@ -16,11 +16,11 @@ pub async fn main(req: Request, env: Env, _ctx: Context) -> Result<Response> {
         .get_async("/notes/:key", routes::notes::handle_get_note)
         .post_async("/notes/:key", routes::notes::handle_set_note)
         .put_async("/notes/:key", routes::notes::handle_set_note)
-        .delete_async("/notes/:key", routes::notes::handle_delete_note);
-        // .get_async("/files", routes::files::handle_list_files)
-        // .get_async("/files/*path", routes::files::handle_get_file)
-        // .put_async("/files/*path", routes::files::handle_upload_file)
-        // .delete_async("/files/*path", routes::files::handle_delete_file);
+        .delete_async("/notes/:key", routes::notes::handle_delete_note)
+        .get_async("/files", routes::files::handle_list_files)
+        .get_async("/files/*path", routes::files::handle_get_file)
+        .put_async("/files/*path", routes::files::handle_upload_file)
+        .delete_async("/files/*path", routes::files::handle_delete_file);
 
     router.run(req, env).await
 }

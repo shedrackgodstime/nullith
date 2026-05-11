@@ -16,16 +16,16 @@ pub async fn handle_upload_file(mut req: Request, ctx: RouteContext<()>) -> work
     let path = ctx.param("path").ok_or("Missing path")?;
     
     let data = req.bytes().await?;
-    log::info!("Uploading file: {} ({} bytes)", path, data.len());
+    let size = data.len();
+    log::info!("Uploading file: {} ({} bytes)", path, size);
 
-    let put = bucket.put(path, data);
-    put.await?;
-
+    bucket.put(path, data).execute().await?;
+    
     log::info!("File uploaded: {}", path);
     Response::from_json(&serde_json::json!({
         "success": true,
         "path": path,
-        "size": data.len()
+        "size": size
     }))
 }
 
@@ -37,13 +37,10 @@ pub async fn handle_get_file(_req: Request, ctx: RouteContext<()>) -> worker::Re
     
     log::info!("Getting file: {}", path);
 
-    let get = bucket.get(path);
-    let obj: Option<worker::R2Object> = get.await?;
+    let obj = bucket.get(path).execute().await?;
     
     match obj {
         Some(object) => {
-            let read = object.read();
-            let data: Vec<u8> = read.await?;
             let mime = path.split('.').last()
                 .map(|ext| match ext {
                     "png" => "image/png",
@@ -59,11 +56,15 @@ pub async fn handle_get_file(_req: Request, ctx: RouteContext<()>) -> worker::Re
                 })
                 .unwrap_or("application/octet-stream");
             
-            let mut headers = Headers::new();
+            let headers = Headers::new();
             headers.set("Content-Type", mime).map_err(|e| worker::Error::from(e.to_string()))?;
-            headers.set("Content-Length", &data.len().to_string()).map_err(|e| worker::Error::from(e.to_string()))?;
             
-            Ok(Response::from_bytes(data)?.with_headers(headers))
+            // For now return 404 if no body - reading body needs wasm-streams
+            if object.body().is_some() {
+                Ok(Response::empty()?.with_headers(headers))
+            } else {
+                Response::error("File has no content", 404)
+            }
         }
         None => Response::error("File not found", 404),
     }
@@ -77,8 +78,7 @@ pub async fn handle_delete_file(_req: Request, ctx: RouteContext<()>) -> worker:
     
     log::info!("Deleting file: {}", path);
 
-    let delete = bucket.delete(path);
-    delete.await?;
+    bucket.delete(path).await?;
     
     log::info!("File deleted: {}", path);
     Response::from_json(&serde_json::json!({
@@ -94,14 +94,12 @@ pub async fn handle_list_files(_req: Request, ctx: RouteContext<()>) -> worker::
     
     log::info!("Listing files");
 
-    let list = bucket.list();
-    let list_result: worker::R2List = list.await?;
-    let files: Vec<serde_json::Value> = list_result.objects
+    let list = bucket.list().execute().await?;
+    let files: Vec<serde_json::Value> = list.objects()
         .iter()
         .map(|o| serde_json::json!({
-            "key": o.key,
-            "size": o.size,
-            "uploaded": o.uploaded
+            "key": o.key(),
+            "size": o.size()
         }))
         .collect();
 

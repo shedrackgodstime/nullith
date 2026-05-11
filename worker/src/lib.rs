@@ -13,6 +13,7 @@ pub async fn main(req: Request, env: Env, _ctx: Context) -> Result<Response> {
     let router = Router::new()
         .get_async("/", handle_root)
         .get_async("/debug/secret", handle_debug_secret)
+        .post_async("/admin/rotate-key", routes::admin::handle_rotate_key)
         .get_async("/notes", routes::notes::handle_get_notes)
         .get_async("/notes/:key", routes::notes::handle_get_note)
         .post_async("/notes/:key", routes::notes::handle_set_note)

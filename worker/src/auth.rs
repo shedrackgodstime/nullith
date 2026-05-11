@@ -3,18 +3,18 @@ use worker::*;
 pub fn verify_api_key(req: &Request, env: &Env) -> Result<bool, worker::Error> {
     let api_key = match env.secret("API_KEY") {
         Ok(key) => {
-            log::info!("API_KEY secret found");
+            log::info!("API_KEY secret found, value length: {}", key.to_string().len());
             key.to_string()
         }
         Err(e) => {
             log::warn!("API_KEY secret error: {:?}", e);
-            return Ok(false);
+            return Err(worker::Error::from("API_KEY not configured"));
         }
     };
 
     if api_key.is_empty() {
         log::warn!("API_KEY is empty");
-        return Ok(false);
+        return Err(worker::Error::from("API_KEY is empty"));
     }
 
     match req.headers().get("x-api-key") {

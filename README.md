@@ -162,6 +162,20 @@ Set the secret via:
 bunx wrangler secret put API_KEY
 ```
 
+### Key Rotation (Nuclear Option)
+
+If you suspect your key is compromised, rotate it:
+
+```bash
+curl -X POST -H "X-API-Key: your-current-key" https://nullith-worker.shedrackgodstime.workers.dev/admin/rotate-key
+```
+
+This returns a new key. Then:
+1. Copy the new key
+2. Go to GitHub repo → Settings → Secrets → API_KEY
+3. Update the secret
+4. Push any small change to trigger deploy
+
 ### Planned
 - Multi-key auth with permissions (read/write/admin)
 - Client-side encryption

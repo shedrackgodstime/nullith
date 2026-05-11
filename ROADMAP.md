@@ -7,6 +7,7 @@
 - [x] Logging and error handling
 - [x] API Key authentication (single key)
 - [x] File upload/download/delete/list
+- [x] Key rotation endpoint
 
 ## In Progress 🔄
 - [ ] Set API_KEY secret in Cloudflare

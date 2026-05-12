@@ -9,3 +9,5 @@ build/
 Cargo.lock
 *.tgz
 rust-skills/
+api/
+nullith-api/

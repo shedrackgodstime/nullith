@@ -1,0 +1,22 @@
+{
+  "builds": [
+    { "src": "src/index.rs", "use": "@vercel/rust" },
+    { "src": "src/notes.rs", "use": "@vercel/rust" },
+    { "src": "src/notes_key.rs", "use": "@vercel/rust" },
+    { "src": "src/files.rs", "use": "@vercel/rust" },
+    { "src": "src/files_path.rs", "use": "@vercel/rust" },
+    { "src": "src/trash.rs", "use": "@vercel/rust" },
+    { "src": "src/trash_id.rs", "use": "@vercel/rust" },
+    { "src": "src/logs.rs", "use": "@vercel/rust" }
+  ],
+  "routes": [
+    { "src": "/$", "dest": "/index" },
+    { "src": "/notes", "dest": "/notes" },
+    { "src": "/notes/.*", "dest": "/notes_key" },
+    { "src": "/files", "dest": "/files" },
+    { "src": "/files/.*", "dest": "/files_path" },
+    { "src": "/trash", "dest": "/trash" },
+    { "src": "/trash/.*", "dest": "/trash_id" },
+    { "src": "/logs", "dest": "/logs" }
+  ]
+}

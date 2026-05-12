@@ -1,0 +1,53 @@
+[package]
+name = "nullith-api"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+vercel_runtime = "2"
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+reqwest = { version = "0.12", features = ["json"] }
+tokio-postgres = "0.7"
+percent-encoding = "2"
+hyper = "1"
+hyper-util = "0.1"
+http-body-util = "0.1"
+
+[profile.release]
+codegen-units = 1
+lto = "fat"
+opt-level = 3
+
+[[bin]]
+name = "index"
+path = "src/index.rs"
+
+[[bin]]
+name = "notes"
+path = "src/notes.rs"
+
+[[bin]]
+name = "notes_key"
+path = "src/notes_key.rs"
+
+[[bin]]
+name = "files"
+path = "src/files.rs"
+
+[[bin]]
+name = "files_path"
+path = "src/files_path.rs"
+
+[[bin]]
+name = "trash"
+path = "src/trash.rs"
+
+[[bin]]
+name = "trash_id"
+path = "src/trash_id.rs"
+
+[[bin]]
+name = "logs"
+path = "src/logs.rs"

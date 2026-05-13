@@ -1,6 +1,6 @@
 runtime: rust@1.75
-build: cargo build --release
-start: ./target/release/nullith-api
+build: cd nullith-api && cargo build --release
+start: ./nullith-api/target/release/nullith-api
 env:
   - NULLITH_URL
   - NULLITH_API_KEY

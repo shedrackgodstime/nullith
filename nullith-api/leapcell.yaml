@@ -1,0 +1,7 @@
+runtime: rust@1.75
+build: cargo build --release
+start: ./target/release/nullith-api
+env:
+  - NULLITH_URL
+  - NULLITH_API_KEY
+  - NEON_DB_URL

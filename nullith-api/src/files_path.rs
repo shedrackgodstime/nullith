@@ -34,12 +34,12 @@ async fn handler(req: Request) -> Result<Response<String>, Error> {
         .headers()
         .get("content-type")
         .and_then(|v| v.to_str().ok())
-        .unwrap_or("application/octet-stream")
+        .unwrap_or("application/json")
         .to_string();
     let body = response.text().await.map_err(|e| e.to_string())?;
 
     Ok(Response::builder()
         .status(status)
-        .header("Content-Type", &content_type)
+        .header("Content-Type", content_type)
         .body(body)?)
 }

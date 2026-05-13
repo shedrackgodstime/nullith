@@ -1,18 +1,7 @@
 use http_body_util::BodyExt;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use tokio_postgres::NoTls;
 use vercel_runtime::{run, service_fn, Error, Request, Response};
-
-#[derive(Serialize)]
-#[allow(dead_code)]
-struct TrashItem {
-    id: i64,
-    data_key: String,
-    data_type: String,
-    content: String,
-    created_at: f64,
-    expires_at: f64,
-}
 
 #[derive(Deserialize)]
 struct TrashInput {
@@ -87,8 +76,16 @@ async fn handler(req: Request) -> Result<Response<String>, Error> {
 
         client.execute(
             "INSERT INTO trash (data_key, data_type, content, created_at, expires_at) VALUES ($1, $2, $3, $4, $5)",
-            &[&input.data_key, &input.data_type, &input.content, &input.created_at, &input.expires_at],
-        ).await.map_err(|e| e.to_string())?;
+            &[
+                &input.data_key,
+                &input.data_type,
+                &input.content,
+                &input.created_at,
+                &input.expires_at,
+            ],
+        )
+        .await
+        .map_err(|e| e.to_string())?;
 
         return Ok(Response::builder()
             .status(201)
